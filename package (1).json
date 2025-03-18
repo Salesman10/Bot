@@ -1,0 +1,16 @@
+{
+  "name": "My_Bot",
+  "version": "1.0.0",
+  "description": "This is My Bot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2"
+  }
+}
