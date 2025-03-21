@@ -20,8 +20,7 @@ import {
 } from "discord.js";
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { load } = fengariInterop;
-
+const { load } = require('fengari-interop');
 // Express server setup
 const app = express();
 const PORT = process.env.PORT || 8080;
