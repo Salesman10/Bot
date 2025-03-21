@@ -1,6 +1,6 @@
 import express from "express";
 import { lua, to_jsstring } from "fengari";
-import { load } from "fengari-interop";
+import { pkg } from "fengari-interop";
 import "dotenv/config";
 import fs from "fs";
 import { exec } from "child_process";
