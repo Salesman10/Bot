@@ -300,10 +300,9 @@ client.on("interactionCreate", async (interaction) => {
 
 
 // Start Express server and Discord bot
-            app.listen(PORT, '0.0.0.0', () => {
-                console.log('✅ Express server running on port ' + PORT);
-                client.login(process.env.TOKEN).then(() => {
-                    console.log('✅ Discord bot ready and will stay alive 24/7!');
-
-                }).catch(console.error);
-            });
+app.listen(PORT, '0.0.0.0', () => {
+    console.log('✅ Express server running on port ' + PORT);
+    client.login(process.env.TOKEN).then(() => {
+        console.log('✅ Discord bot ready and will stay alive 24/7!');
+    }).catch(console.error);
+});
