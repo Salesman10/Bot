@@ -11,7 +11,7 @@
     "@octokit/rest": "^21.1.1",
     "discord.js": "^14.11.0",
     "fengari": "^0.1.4",
-    "fengari-interop": "^0.1.4",
+    "fengari-interop": "github:fengari-lua/fengari-interop",
     "dotenv": "^16.4.7",
     "express": "^4.18.2"
   }
