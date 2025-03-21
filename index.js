@@ -199,7 +199,7 @@ client.on("interactionCreate", async (interaction) => {
                 console.error(`Execution error: ${error.message}`);
                 interaction.followUp({ content: "❌ Lua execution failed!", ephemeral: true });
             }
-}
+    
                 
 
                 try {
