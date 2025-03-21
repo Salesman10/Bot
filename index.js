@@ -4,6 +4,7 @@ import "dotenv/config";
 import fs from "fs";
 import { exec } from "child_process";
 import { Octokit } from "@octokit/rest";
+import axios from "axios";
 import {
     Client,
     GatewayIntentBits,
@@ -19,10 +20,6 @@ import {
     EmbedBuilder,
     InteractionType,
 } from "discord.js";
-import pkg from 'fengari-interop';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const { load } = require('fengari-interop');
 
 // Express server setup for keep-alive
 const app = express();
