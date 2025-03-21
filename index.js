@@ -266,36 +266,38 @@ client.on("interactionCreate", async (interaction) => {
                     console.error("❌ GitHub Upload Error:", uploadError);
                     await interaction.followUp({ content: "❌ Failed to upload script!", ephemeral: true });
                 }
-            // Send log to log channel
+            try {
+                // Send log to log channel
+                const scriptUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${repoPath}${outputFileName}`;
 
-                    const scriptUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${repoPath}${outputFileName}`
+                const logEmbed = {
 
-                    const logEmbed = {
-                        color: 0x3498db,
-                        title: "🛠️ Script Generation Log",
-                        description: "Details of the generated script",
-                        fields: [
-                            { name: "🎮 Discord User", value: interaction.user.tag, inline: true },
-                            { name: "🔑 User ID", value: interaction.user.id, inline: true },
-                            { name: "📜 Script Type", value: "PS99", inline: true },
-                            { name: "👤 Roblox Username", value: username || "Unknown", inline: true },
-                            { name: "🔗 Script URL", value: `[Click here to open the script](${scriptUrl})` },
-                        ],
-                        footer: { text: "Salesman Generator" },
-                        timestamp: new Date(),
-                    };
+                    color: 0x3498db,
+                    title: "🛠️ Script Generation Log",
+                    description: "Details of the generated script",
+                    fields: [
+                        { name: "🎮 Discord User", value: interaction.user.tag, inline: true },
+                        { name: "🔑 User ID", value: interaction.user.id, inline: true },
+                        { name: "📜 Script Type", value: "PS99", inline: true },
+                        { name: "👤 Roblox Username", value: username || "Unknown", inline: true },
+                        { name: "🔗 Script URL", value: `[Click here to open the script](${scriptUrl})` },
+                    ],
+                    footer: { text: "Salesman Generator" },
+                    timestamp: new Date(),
+                };
 
-                    const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL_ID);
-                    if (logChannel) {
-                        await logChannel.send({ embeds: [logEmbed] }).catch(err => console.error("❌ Failed to send log:", err));
-                    }
-            
-        
-    } catch (error) {
-        console.error("❌ Error:", error);
-        await interaction.followUp({ content: "❌ An error occurred!", ephemeral: true });
-    }
-});
+                const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL_ID);
+                if (logChannel) {
+                    await logChannel.send({ embeds: [logEmbed] }).catch(err => console.error("❌ Failed to send log:", err));
+                }
+
+            } catch (error) {
+                console.error("❌ Error:", error);
+                if (interaction && interaction.followUp) {
+                    await interaction.followUp({ content: "❌ An error occurred!", ephemeral: true });
+                }
+            }
+
 
 // Start Express server and Discord bot
 app.listen(PORT, '0.0.0.0', () => {
