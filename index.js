@@ -20,7 +20,7 @@ import {
 } from "discord.js";
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { load } = require('fengari-interop');
+const { load } = fengariInterop;
 
 // Express server setup
 const app = express();
@@ -94,7 +94,7 @@ client.on("interactionCreate", async (interaction) => {
             `;
 
             try {
-                const luaFunction = load(luaScript);
+                const luaFunction = fengariInterop.load(luaScript);
                 luaFunction();
                 const output = to_jsstring(lua.lua_tostring(lua.L, -1));
                 fs.writeFileSync(outputFileName, output);
