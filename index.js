@@ -1,6 +1,5 @@
 import express from "express";
 import { lua, to_jsstring } from "fengari";
-import pkg from 'fengari-interop';
 import "dotenv/config";
 import fs from "fs";
 import { exec } from "child_process";
@@ -19,6 +18,8 @@ import {
     ButtonStyle,
     EmbedBuilder,
 } from "discord.js";
+import pkg from 'fengari-interop';
+const { pkg } = pkg;
 
 // Express server setup for keep-alive
 const app = express();
@@ -32,8 +33,6 @@ app.get('/', (_, res) => {
 app.get('/health', (_, res) => {
     res.status(200).send('OK');
 });
-
-const { pkg } = pkg;
 
 // Discord bot setup
 const client = new Client({
