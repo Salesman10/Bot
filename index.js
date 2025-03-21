@@ -307,4 +307,3 @@ client.on("interactionCreate", async (interaction) => {
 
                 }).catch(console.error);
             });
-})();
