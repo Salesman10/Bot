@@ -23,7 +23,6 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const { load } = require('fengari-interop');
 
-
 // Express server setup for keep-alive
 const app = express();
 const PORT = process.env.PORT || 8080;
